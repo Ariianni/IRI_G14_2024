@@ -1,5 +1,6 @@
 import estados as es
 import os
+import matplotlib as ma
 
 def menuprincipal():
   print("--------------------ELECTOCARDIOGRAMA---------------------------")
