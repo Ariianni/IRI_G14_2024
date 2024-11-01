@@ -1,4 +1,6 @@
 import os
+import numpy as np
+import matplotlib.pyplot as plt
 
 def menu():
     a=0
@@ -25,6 +27,11 @@ def menu():
 
 
 def caminando():
+    x=np.linspace(0,10)
+    ec=x**2
+
+    plt.plot(ec)
+    plt.show()
     print("caminando")
 
 def durmiendo():
