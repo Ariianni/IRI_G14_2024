@@ -3,18 +3,22 @@ import deter_estado as dt
 import os
 import matplotlib as ma
 import numpy as np
-def menuprincipal():
+def menuprincipal(): 
   print("--------------------ELECTOCARDIOGRAMA---------------------------")
   print("1) graficas determinadas")
   print("2) determinar estado")
   print("3) exit")
-  op=int(input("¿Que deseas ver?: "))
-  if(op == 1):
-    return 1
-  if(op == 2):
-    return 2
-  if(op == 3):
-    return 3  
+  op=0
+  while(op!=1 and op!=2):
+    op=int(input("¿Que deseas ver?: "))
+    if(op == 1):
+      return 1
+    if(op == 2):
+      return 2
+    if(op == 3):
+      return 3  
+    if(op!=1 and op!=2):
+      print("error, no se encuentra en las opciones")
 
 
 
