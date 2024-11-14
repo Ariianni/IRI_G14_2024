@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+import random as rd
 
 T = 120
 tiempo = np.linspace(
@@ -174,6 +175,26 @@ def corriendo():
 
 def arritmia():
     print("arritmia")
+
+    Ps = rd.randint(100, 200)  
+    Pd = rd.randint(10, 70)
+
+
+    # Inicializa yP con ceros
+    yA = np.zeros_like(tiempo)
+    yA += mask1 * (-((Ps - Pd) / 20) * np.sin(0.15 * tiempo) + Pd)
+    yA += mask2 * (-((1) / 8) * (tiempo - ((Ps - Pd) / 2))**2 + Ps)
+    yA += mask3 * ((1 / 11) * (tiempo - (Ps - Pd))**2 + Pd +19)
+    yA += mask4 * (np.exp(-0.189 * tiempo + 10) + Pd)
+
+    yA_total = np.tile(yA, 3)
+    tiempo_A_total = np.linspace(0, 3 * 120, 3 * len(tiempo))
+    plt.subplot(2, 1, 1)
+    plt.ylabel("Volumen(ml)")
+    plt.grid()
+    plt.plot(tiempo_A_total, yA_total)
+
+    plt.show()
 
 def fibrilacion():
     print("fibrilacion")
