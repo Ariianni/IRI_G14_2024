@@ -4,9 +4,7 @@ import matplotlib.pyplot as plt
 import random as rd
 
 T = 120
-tiempo = np.linspace(
-    0, T, 1000
-)
+tiempo = np.linspace( 0, T, 1000)
 #---------Mascaras de volumen ventricular----------------
 mask1 = (tiempo <= (10))
 mask2 = ((tiempo > (10)) & (tiempo <= (50)))
@@ -177,7 +175,7 @@ def arritmia():
     print("arritmia")
 
     Ps = rd.randint(100, 200)  
-    Pd = rd.randint(10, 70)
+    Pd = rd.randint(30, 70)
 
 
     # Inicializa yP con ceros
@@ -187,14 +185,35 @@ def arritmia():
     yA += mask3 * ((1 / 11) * (tiempo - (Ps - Pd))**2 + Pd +19)
     yA += mask4 * (np.exp(-0.189 * tiempo + 10) + Pd)
 
-    yA_total = np.tile(yA, 3)
+    yA_total = np.tile(0.5*yA, 3)
     tiempo_A_total = np.linspace(0, 3 * 120, 3 * len(tiempo))
     plt.subplot(2, 1, 1)
     plt.ylabel("Volumen(ml)")
     plt.grid()
     plt.plot(tiempo_A_total, yA_total)
 
-    plt.show()
+
+ #----------VOLUMEN VENTRICULAR----------
+ #-----------------ARRITMIA---------------------
+VSh= rd.randint(170, 200)
+VDk= rd.randint(1,70)
+
+y4 = np.zeros_like(tiempo)
+y4 = y4 + mask1 * (VSh)
+y4 = y4 + mask2 * (((VSh*(np.exp(-tiempo+2.3))**(1/(10)))+VDk))
+y4 = y4 + mask3 * ((1*np.log10((tiempo -48)**20)+VDk-5))
+cesar=(1*np.log10((tiempo -48)**20)+VDk-5)
+y4 = y4 + mask4 * ((VSh-cesar-6)*np.sin(((1/10) * (tiempo))+3.4)+cesar+6)
+y4 = y4 + mask5 * (-np.sin(((1 / 4) * (tiempo)-3))+VSh)
+
+yz_total = np.tile(y4, 3)
+tiempo_totalz = np.linspace(0, 3 * 120, 3 * len(tiempo))
+plt.subplot(2, 1, 2)
+plt.ylabel("Volumen(ml)")
+plt.grid()
+plt.plot(tiempo_totalz, yz_total)
+plt.show()
+
 
 def fibrilacion():
     print("fibrilacion")
@@ -224,13 +243,14 @@ def fibrilacion():
     pendiente_exponencial = -0.189 * np.exp(-0.189 * transicion_tiempo + 10)
     amplitud_seno = 4
     frecuencia_seno = (Ps - Pd) / 30
+    sen_fre = (Ps - Pd) / 75
     fase_inicial = np.arcsin((fin_exponencial - Pd) / amplitud_seno)  # Ajuste para la fase del seno
 
     yP += FAmask5 * (amplitud_seno * np.sin(frecuencia_seno * (tiempo - transicion_tiempo) + fase_inicial) + Pd)#punto de fibrilacion
 
     #-----graficar--------
     yA_total = np.tile(yP, 3)
-    tiempo_A_total = np.linspace(0, 3 * 120, 3 * len(tiempo))
+    tiempo_A_total = np.linspace(0, 3, 3* len(tiempo))
     plt.subplot(2, 1, 1)
     plt.ylabel("Presion (mmHg)")
     plt.grid()
@@ -250,11 +270,11 @@ def fibrilacion():
     y2 = y2 + FVmask2 * (((VDc*(np.exp(-tiempo-1))**(1/(10)))+VSc))
     y2 = y2 + FVmask3 * ((1*np.log10((tiempo -48)**20)+VSc-5))
     cesar=(1*np.log10((tiempo -48)**20)+VSc-5)
-    y2 = y2 + FVmask4 * (amplitud_seno * np.sin(frecuencia_seno * (tiempo - transicion_tiempo) + fase_inicial) + Pd)
+    y2 = y2 + FVmask4 * (amplitud_seno * np.sin(sen_fre * (tiempo - transicion_tiempo) + fase_inicial) + Pd)
 
     #-----graficar--------
     yV_total = np.tile(y2, 3)
-    tiempo_V_total = np.linspace(0, 3 * 120, 3 * len(tiempo))
+    tiempo_V_total = np.linspace(0, 3, 3 * len(tiempo))
     plt.subplot(2, 1, 2)
     plt.ylabel("Volumen (ml)")
     plt.grid()
