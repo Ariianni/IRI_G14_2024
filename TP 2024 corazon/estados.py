@@ -28,6 +28,8 @@ def menu():
         print("1) caminando")
         print("2) durmiendo")
         print("3) corriendo")
+        print("4) arritmia")
+        print("5) fibrilacion ventricular")
         print("9) exit")
         a=int(input("¿En que situacion lo quieres ver ahora?: "))
 
@@ -175,4 +177,69 @@ def arritmia():
 
 def fibrilacion():
     print("fibrilacion")
+    #----------------------PRESION AORTICA----------------
+    Ps=120
+    Pd=80
+    #-----------mascaras de aorta------------
+    FAmask1 = (tiempo >= 0) & (tiempo <= 1.99)
+    FAmask2 = (tiempo > 1.99) & (tiempo <= 27)
+    FAmask3 = (tiempo > 27) & (tiempo <= 44.5)
+    FAmask4 = (tiempo > 44.5) & (tiempo <= 59.6)
+    FAmask5 = (tiempo > 59.6) & (tiempo <= 120)
+
+    # Inicializa yP con ceros
+    yP = np.zeros_like(tiempo)
+
+    #-----------------Funcion--------------------------
+    yP += FAmask1 * (-((Ps - Pd) / 20) * np.sin(0.15 * tiempo) + Pd)
+    yP += FAmask2 * (-((1) / 8) * (tiempo - ((Ps - Pd) / 2))**2 + Ps)
+    yP += FAmask3 * ((1 / 11) * (tiempo - (Ps - Pd))**2 + Pd + 19)
+    yP_exp = np.exp(-0.189 * tiempo + 10) + Pd
+    yP += FAmask4 * yP_exp
+
+    #  punto de transición
+    transicion_tiempo = 59.6
+    fin_exponencial = np.exp(-0.189 * transicion_tiempo + 10) + Pd
+    pendiente_exponencial = -0.189 * np.exp(-0.189 * transicion_tiempo + 10)
+    amplitud_seno = 4
+    frecuencia_seno = (Ps - Pd) / 30
+    fase_inicial = np.arcsin((fin_exponencial - Pd) / amplitud_seno)  # Ajuste para la fase del seno
+
+    yP += FAmask5 * (amplitud_seno * np.sin(frecuencia_seno * (tiempo - transicion_tiempo) + fase_inicial) + Pd)#punto de fibrilacion
+
+    #-----graficar--------
+    yA_total = np.tile(yP, 3)
+    tiempo_A_total = np.linspace(0, 3 * 120, 3 * len(tiempo))
+    plt.subplot(2, 1, 1)
+    plt.ylabel("Presion (mmHg)")
+    plt.grid()
+    plt.plot(tiempo_A_total, yA_total)
+
+    #----------VOLUMEN VENTRICULAR----------
+    #---------Mascaras de volumen ventricular----------------
+    FVmask1 = (tiempo <= (10))
+    FVmask2 = ((tiempo > (10)) & (tiempo <= (50)))
+    FVmask3 = ((tiempo > (50)) & (tiempo <= (59.6)))
+    FVmask4 = (tiempo > (59.6))
+
+    VDc=120
+    VSc=80
+    y2 = np.zeros_like(tiempo)
+    y2 = y2 + FVmask1 * (VDc)
+    y2 = y2 + FVmask2 * (((VDc*(np.exp(-tiempo-1))**(1/(10)))+VSc))
+    y2 = y2 + FVmask3 * ((1*np.log10((tiempo -48)**20)+VSc-5))
+    cesar=(1*np.log10((tiempo -48)**20)+VSc-5)
+    y2 = y2 + FVmask4 * (amplitud_seno * np.sin(frecuencia_seno * (tiempo - transicion_tiempo) + fase_inicial) + Pd)
+
+    #-----graficar--------
+    yV_total = np.tile(y2, 3)
+    tiempo_V_total = np.linspace(0, 3 * 120, 3 * len(tiempo))
+    plt.subplot(2, 1, 2)
+    plt.ylabel("Volumen (ml)")
+    plt.grid()
+    plt.plot(tiempo_V_total, yV_total)
+
+    plt.show()
+
+
 
