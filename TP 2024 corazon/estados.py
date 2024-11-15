@@ -195,24 +195,24 @@ def arritmia():
 
  #----------VOLUMEN VENTRICULAR----------
  #-----------------ARRITMIA---------------------
-VSh= rd.randint(170, 200)
-VDk= rd.randint(1,70)
+    VSh= rd.randint(170, 200)
+    VDk= rd.randint(1,70)
 
-y4 = np.zeros_like(tiempo)
-y4 = y4 + mask1 * (VSh)
-y4 = y4 + mask2 * (((VSh*(np.exp(-tiempo+2.3))**(1/(10)))+VDk))
-y4 = y4 + mask3 * ((1*np.log10((tiempo -48)**20)+VDk-5))
-cesar=(1*np.log10((tiempo -48)**20)+VDk-5)
-y4 = y4 + mask4 * ((VSh-cesar-6)*np.sin(((1/10) * (tiempo))+3.4)+cesar+6)
-y4 = y4 + mask5 * (-np.sin(((1 / 4) * (tiempo)-3))+VSh)
+    y4 = np.zeros_like(tiempo)
+    y4 = y4 + mask1 * (VSh)
+    y4 = y4 + mask2 * (((VSh*(np.exp(-tiempo+2.3))**(1/(10)))+VDk))
+    y4 = y4 + mask3 * ((1*np.log10((tiempo -48)**20)+VDk-5))
+    cesar=(1*np.log10((tiempo -48)**20)+VDk-5)
+    y4 = y4 + mask4 * ((VSh-cesar-6)*np.sin(((1/10) * (tiempo))+3.4)+cesar+6)
+    y4 = y4 + mask5 * (-np.sin(((1 / 4) * (tiempo)-3))+VSh)
 
-yz_total = np.tile(y4, 3)
-tiempo_totalz = np.linspace(0, 3 * 120, 3 * len(tiempo))
-plt.subplot(2, 1, 2)
-plt.ylabel("Volumen(ml)")
-plt.grid()
-plt.plot(tiempo_totalz, yz_total)
-plt.show()
+    yz_total = np.tile(y4, 3)
+    tiempo_totalz = np.linspace(0, 3 * 120, 3 * len(tiempo))
+    plt.subplot(2, 1, 2)
+    plt.ylabel("Volumen(ml)")
+    plt.grid()
+    plt.plot(tiempo_totalz, yz_total)
+    plt.show()
 
 
 def fibrilacion():
